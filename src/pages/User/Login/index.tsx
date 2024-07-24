@@ -103,11 +103,11 @@ const Login: React.FC = () => {
   const { styles } = useStyles();
   const intl = useIntl();
 
-  useEffect(() => {
-    getChartListChartByPageListPage({}).then((res) => {
-      console.error('res', res);
-    });
-  });
+  // useEffect(() => {
+  //   getChartListChartByPageListPage({}).then((res) => {
+  //     console.error('res', res);
+  //   });
+  // });
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
