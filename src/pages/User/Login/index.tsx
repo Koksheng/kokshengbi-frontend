@@ -1,6 +1,7 @@
 import { Footer } from '@/components';
 import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { getChartListChartByPageListPage } from '@/services/kokshengbi-backend/chart';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -15,12 +16,12 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
+import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
-import Settings from '../../../../config/defaultSettings';
-import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
 import { createStyles } from 'antd-style';
+import React, { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
+import Settings from '../../../../config/defaultSettings';
 
 const useStyles = createStyles(({ token }) => {
   return {
@@ -102,6 +103,12 @@ const Login: React.FC = () => {
   const { styles } = useStyles();
   const intl = useIntl();
 
+  useEffect(() => {
+    getChartListChartByPageListPage({}).then((res) => {
+      console.error('res', res);
+    });
+  });
+
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
@@ -167,7 +174,7 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
+          title="Business Intelligence"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
             autoLogin: true,
