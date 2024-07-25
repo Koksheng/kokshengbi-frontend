@@ -11,7 +11,7 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
+import { FormattedMessage, Helmet, history, Link, SelectLang, useIntl, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useEffect, useState } from 'react';
@@ -77,36 +77,57 @@ const Login: React.FC = () => {
   //   });
   // });
 
-  const fetchUserInfo = async () => {
-    const userInfo = await getUserGetCurrentUser();
-    if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
-      });
-    }
-  };
+  // const fetchUserInfo = async () => {
+  //   const userInfo = await getUserGetCurrentUser();
+  //   if (userInfo) {
+  //     flushSync(() => {
+  //       setInitialState((s) => ({
+  //         ...s,
+  //         currentUser: userInfo,
+  //       }));
+  //     });
+  //   }
+  // };
 
   const handleSubmit = async (values: API.UserLoginRequest) => {
     try {
       // 登录
-      const res = await postUserUserLogin(values);
-      if (res.code === 0) {
-        const defaultLoginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
+      const res = await postUserUserLogin({
+        ...values,
+      });
+      console.log("res",res);
+
+      if (res.data) {
+        
+        setInitialState({
+          loginUser: res.data
         });
-        message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+
+        // Delay execution to ensure state is updated before checking it
+        setTimeout(() => {
+          console.log("here login res.data",res.data);
+          const urlParams = new URL(window.location.href).searchParams;
+          history.push(urlParams.get('redirect') || '/');
+          console.log("here login loginUser",initialState?.loginUser);
+        }, 0);
         return;
       }
-      else{
-        message.error(res.message);
-      }
+
+      // if (res.code === 0) {
+      //   const defaultLoginSuccessMessage = intl.formatMessage({
+      //     id: 'pages.login.success',
+      //     defaultMessage: '登录成功！',
+      //   });
+      //   message.success(defaultLoginSuccessMessage);
+      //   await fetchUserInfo();
+      //   const urlParams = new URL(window.location.href).searchParams;
+      //   history.push(urlParams.get('redirect') || '/');
+      //   return;
+      // }
+      // else{
+      //   message.error(res.message);
+      // }
+
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
         id: 'pages.login.failure',
@@ -220,13 +241,14 @@ const Login: React.FC = () => {
             <ProFormCheckbox noStyle name="autoLogin">
               <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
             </ProFormCheckbox>
-            <a
+            <Link
               style={{
                 float: 'right',
               }}
+              to='/user/register'
             >
               <FormattedMessage id="pages.login.registerAccount" defaultMessage="忘记密码" />
-            </a>
+            </Link>
           </div>
         </LoginForm>
       </div>

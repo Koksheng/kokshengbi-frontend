@@ -139,7 +139,6 @@ export default defineConfig({
       // 或者使用在线的版本
       schemaPath: 'http://localhost:5295/swagger/v1/swagger.json',
       projectName: 'kokshengbi-backend',
-      // schemaPath: join(__dirname, 'oneapi.json'),
       mock: false,
     },
     // {
