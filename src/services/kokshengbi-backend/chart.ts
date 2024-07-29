@@ -32,6 +32,50 @@ export async function postChartDeleteChart(
   });
 }
 
+/** 此处后端没有提供注释 POST /api/Chart/genChartByAi */
+export async function postChartGenChartByAi(
+  body: {
+    chartName?: string,
+    goal?: string,
+    chartType?: string,
+  },file?: File ,
+  options?: {[key: string]: any}
+) {
+  const formData = new FormData();
+  
+  if(file){
+  
+    formData.append('file', file)
+  
+  }
+  
+  Object.keys(body).forEach(ele => {
+    
+    const item = (body as any)[ele];
+    
+    if (item !== undefined && item !== null) {
+      
+      if (typeof item === 'object' && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ''));
+        } else {
+          formData.append(ele, JSON.stringify(item));
+        }
+      } else {
+        formData.append(ele, item);
+      }
+      
+    }
+  });
+  
+  return request<API.BIResponseBaseResponse>('/api/Chart/genChartByAi', {
+  method: 'POST',
+    data: formData,
+    requestType: 'form',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/Chart/getChartById */
 export async function getChartGetChartById(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)

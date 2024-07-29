@@ -26,6 +26,19 @@ declare namespace API {
     description?: string;
   };
 
+  type BIResponse = {
+    genChart?: string;
+    genResult?: string;
+    chartId?: number;
+  };
+
+  type BIResponseBaseResponse = {
+    code?: number;
+    data?: BIResponse;
+    message?: string;
+    description?: string;
+  };
+
   type ChartSafetyResponse = {
     id?: number;
     goal?: string;

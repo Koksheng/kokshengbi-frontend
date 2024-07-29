@@ -28,10 +28,13 @@ export default [
     ],
   },
   {
-    path: '/welcome',
-    name: 'welcome',
+    path: '/',
+    redirect: './add_chart',
+  },
+  {
+    path: '/add_chart',
     icon: 'smile',
-    component: './Welcome',
+    component: './AddChart',
   },
   {
     path: '/admin',
