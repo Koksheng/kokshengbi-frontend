@@ -1,6 +1,6 @@
 import { postChartGenChartByAi } from '@/services/kokshengbi-backend/chart';
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Form, message, Select, Space, Upload} from 'antd';
+import { Button, Card, Col, Divider, Form, message, Row, Select, Space, Spin, Upload} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
@@ -25,6 +25,8 @@ const AddChart: React.FC = () => {
     }
     console.log('Received values of form: ', values);
     setSubmitting(true);
+    setChart(undefined);
+    setOption(undefined);
 
     const { file, ...params } = values;
     // Get the file object if it exists
@@ -57,65 +59,80 @@ const AddChart: React.FC = () => {
 
   return (
     <div className="add-chart">
-      <Form
-        name="addChart"
-        onFinish={onFinish}
-        initialValues={{ }}
-      >
-        
-        <Form.Item name="goal" label="Analysis Goal:" rules={[{ required: true, message: 'Please enter the analysis requirement!' }]}>
-          <TextArea placeholder="Please enter the analysis requirement, such as: Analyze the growth of website users." />
-        </Form.Item>
-        
-        <Form.Item name="chartName" label="Chart Name:">
-          <TextArea placeholder="Please enter the chart name." />
-        </Form.Item>
-
-        <Form.Item
-          name="chartType"
-          label="Chart Type"
-        >
-          <Select 
-            options={[
-              { value: 'Line Chart', label: 'Line Chart' },
-              { value: 'Bar Chart', label: 'Bar Chart' },
-              { value: 'Stacked Chart', label: 'Stacked Chart' },
-              { value: 'Pie Chart', label: 'Pie Chart' },
-              { value: 'Radar Chart', label: 'Radar Chart' },
-            ]}
+    <Row gutter={24}>
+      <Col span={12}>
+      <Card title="Intelligent Analysis">
+        <Form
+            name="addChart"
+            labelAlign="left" labelCol={{span:4}} wrapperCol={{span:16}}
+            onFinish={onFinish}
+            initialValues={{ }}
           >
-          </Select>
-        </Form.Item>
+          
+          <Form.Item name="goal" label="Analysis Goal:" rules={[{ required: true, message: 'Please enter the analysis requirement!' }]}>
+            <TextArea placeholder="Please enter the analysis requirement, such as: Analyze the growth of website users." />
+          </Form.Item>
+          
+          <Form.Item name="chartName" label="Chart Name:">
+            <TextArea placeholder="Please enter the chart name." />
+          </Form.Item>
+
+          <Form.Item
+            name="chartType"
+            label="Chart Type"
+          >
+            <Select 
+              options={[
+                { value: 'Line Chart', label: 'Line Chart' },
+                { value: 'Bar Chart', label: 'Bar Chart' },
+                // { value: 'Stacked Chart', label: 'Stacked Chart' },
+                { value: 'Pie Chart', label: 'Pie Chart' },
+                // { value: 'Radar Chart', label: 'Radar Chart' },
+              ]}
+            >
+            </Select>
+          </Form.Item>
 
 
-        <Form.Item
-          name="file"
-          label="Origianl Data"
-        >
-          <Upload name="file">
-            <Button icon={<UploadOutlined />}>Click to upload CSV file</Button>
-          </Upload>
-        </Form.Item>
+          <Form.Item
+            name="file"
+            label="Origianl Data"
+          >
+            <Upload name="file" maxCount={1}>
+              <Button icon={<UploadOutlined />}>Click to upload CSV file</Button>
+            </Upload>
+          </Form.Item>
+          
+
+          <Form.Item wrapperCol={{ span: 16, offset: 4 }}>
+            <Space>
+              <Button type="primary" htmlType="submit" loading={submitting} disabled={submitting}>
+                Submit
+              </Button>
+              <Button htmlType="reset">reset</Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Card>
         
-
-        <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-          <Space>
-            <Button type="primary" htmlType="submit" loading={submitting} disabled={submitting}>
-              Submit
-            </Button>
-            <Button htmlType="reset">reset</Button>
-          </Space>
-        </Form.Item>
-      </Form>
-      <div>
-        分析结论: {chart?.genResult}
-      </div>
-      <div>
-        生成图表: 
-        {
-          option && <ReactECharts option={option} />
-        }
-      </div>
+      </Col>
+      <Col span={12}>
+        
+        <Card title="Conclusion">
+          {chart?.genResult ?? <div>Please submit on the left first</div>}
+          <Spin spinning={submitting}/>
+        </Card>
+        <Divider />
+        <Card title="Visualization Chart">
+          {
+            option ? <ReactECharts option={option} /> : <div>Please submit on the left first</div>
+          }
+          <Spin spinning={submitting}/>
+        </Card>
+      </Col>
+    </Row>
+      
+      
     </div>
   );
 };
