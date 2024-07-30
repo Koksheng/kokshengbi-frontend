@@ -40,7 +40,31 @@ const AddChart: React.FC = () => {
         message.error("Analysation Failed.");
       }else{
         message.success("Analysation Successfully");
-        const chartOption = JSON.parse(res.data.genChart ?? '');
+
+
+        // const chartOption = JSON.parse(res.data.genChart ?? '');
+        // const chartOption = res.data.genChart;
+        // // Unescape and parse the genChart data
+        const unescapedGenChart = res?.data?.genChart?.replace(';', '') ?? '';
+        const chartOption = JSON.parse(unescapedGenChart);
+        // console.log('chartOption: ', chartOption);
+
+        // let chartOption;
+        // const genChart = res.data.genChart; // This is the string
+
+        // // Check if genChart is a string, then parse it
+        // if (typeof genChart === 'string') {
+        //     try {
+        //         // Trim the string before parsing
+        //         chartOption = JSON.parse('['+genChart.trim()+']');
+        //     } catch (error) {
+        //         console.error('Error parsing genChart:', error);
+        //         throw new Error("Echarts parsing error: ");
+        //     }
+        // } else {
+        //     chartOption = genChart; // Assume it's already an object
+        // }
+
         console.log('chartOption: ', chartOption);
         if (!chartOption){
           throw new Error("Echarts parsing error." );
@@ -51,6 +75,7 @@ const AddChart: React.FC = () => {
         }
       }
     } catch (e: any){
+      console.log("e.message: " + e.message);
       message.error("Analysation Failed. " + e.message);
     }
     setSubmitting(false);
@@ -87,7 +112,7 @@ const AddChart: React.FC = () => {
                 { value: 'Bar Chart', label: 'Bar Chart' },
                 // { value: 'Stacked Chart', label: 'Stacked Chart' },
                 { value: 'Pie Chart', label: 'Pie Chart' },
-                // { value: 'Radar Chart', label: 'Radar Chart' },
+                { value: 'Radar Chart', label: 'Radar Chart' },
               ]}
             >
             </Select>
