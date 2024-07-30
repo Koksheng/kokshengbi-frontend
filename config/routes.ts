@@ -37,6 +37,7 @@ export default [
     icon: 'barChart',
     component: './AddChart',
   },
+  { path: '/my_chart', name: 'MyChart', icon: 'pieChart', component: './MyChart' },
   {
     path: '/admin',
     name: 'admin',
