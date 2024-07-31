@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { getChartListChartByPageListPage } from '@/services/kokshengbi-backend/chart';
-import { Avatar, List, message } from 'antd';
-import { getInitialState } from '@/app';
+import { Avatar, Card, List, message } from 'antd';
 import { useModel } from '@umijs/max';
+import Search from 'antd/es/input/Search';
 
 /**
  * 我的图表页面
@@ -11,7 +11,8 @@ import { useModel } from '@umijs/max';
  */
 const MyChartPage: React.FC = () => {
   const initSearchParams = {
-    pageSize: 12,
+    current: 1,
+    pageSize: 4,
   }
 
   const [searchParams, setSearchParams] = useState<API.getChartListChartByPageListPageParams>({...initSearchParams});
@@ -28,6 +29,15 @@ const MyChartPage: React.FC = () => {
       if(res.data){
         setChartList(res.data.items ?? []);
         setTotal(res.data.totalCount ?? 0);
+
+        if(res.data.items){
+          res.data.items.forEach(data => {
+            const chartOption = JSON.parse(data.genChart ?? '{}');
+            chartOption.title = undefined;
+            data.genChart = JSON.stringify(chartOption);
+          });
+        }
+        // console.log("res.data.items",res.data.items);
       }else{
         message.error('Get My Chart Failed.');
       }
@@ -41,35 +51,60 @@ const MyChartPage: React.FC = () => {
     loadData();
   }, [searchParams]);
 
+  // todo: 
+  // 1. user can see original data
+  // 2. after click can jump to edit page to edit genChart
+
   return (
     <div className="my-chart=page">
+      <div>
+        <Search placeholder="Please input chart name" loading={loading} enterButton onSearch={(value)=>{
+          setSearchParams({
+            ...initSearchParams,
+            chartName: value,
+          })
+        }} />
+      </div>
+      <div className='margin-16' />
       <List
-        itemLayout="vertical"
-        size="large"
+        grid={{
+          gutter: 16,
+          xs: 1,
+          sm: 1,
+          md: 1,
+          lg: 2,
+          xl: 2,
+          xxl: 2,
+        }}
         pagination={{
-          onChange: (page) => {
-            console.log(page);
+          onChange: (page, pageSize) => {
+            setSearchParams({
+              ...searchParams,
+              current: page,
+              pageSize,
+            })
           },
+          current: searchParams.current,
           pageSize: searchParams.pageSize,
+          total: total,
         }}
         loading={loading}
         dataSource={chartList}
-        footer={
-          <div>
-            <b>ant design</b> footer part
-          </div>
-        }
         renderItem={(item) => (
           <List.Item
             key={item.id}
           >
-            <List.Item.Meta
-              avatar={<Avatar src={loginUser?.userAvatar} />}
-              title={item.chartName}
-              description={item.chartType ? ('Chart Type: ' + item.chartType) : undefined}
-            />
-            {'Analysis Goal: ' + item.goal}
-            <ReactECharts option={JSON.parse(item.genChart?.replace(';', '') ?? '{}')} />
+            <Card>
+              <List.Item.Meta
+                avatar={<Avatar src={loginUser?.userAvatar} />}
+                title={item.chartName}
+                description={item.chartType ? ('Chart Type: ' + item.chartType) : undefined}
+              />
+              <div style={{marginBottom:16}} />
+              <p>{'Analysis Goal: ' + item.goal}</p>
+              <div style={{marginBottom:16}} />
+              <ReactECharts option={JSON.parse(item.genChart?.replace(';', '') ?? '{}')} />
+            </Card>
           </List.Item>
         )}
       />
