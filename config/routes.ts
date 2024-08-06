@@ -37,6 +37,12 @@ export default [
     icon: 'barChart',
     component: './AddChart',
   },
+  {
+    path: '/add_chart_async',
+    name: 'Intelligent Analysis (Async)',
+    icon: 'barChart',
+    component: './AddChartAsync',
+  },
   { path: '/my_chart', name: 'MyChart', icon: 'pieChart', component: './MyChart' },
   {
     path: '/admin',

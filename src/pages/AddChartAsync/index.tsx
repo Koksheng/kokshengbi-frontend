@@ -1,18 +1,17 @@
-import { postChartGenChartByAiGenChartByAi } from '@/services/kokshengbi-backend/chart';
+import { postChartGenChartByAiGenChartByAiAsync } from '@/services/kokshengbi-backend/chart';
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Divider, Form, message, Row, Select, Space, Spin, Upload} from 'antd';
+import { Button, Card, Form, message, Select, Space, Upload} from 'antd';
+import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useState } from 'react';
-import ReactECharts from 'echarts-for-react';
 
 /**
- * 添加图表页面
+ * 添加图表(异步)页面
  * @constructor
  */
-const AddChart: React.FC = () => {
-  const [chart, setChart] = useState<API.BIResponse>();
-  const [option, setOption] = useState<any>();
-  const [submitting, setSubmitting] = useState<boolean>(false);
+const AddChartAsync: React.FC = () => {
+    const [form] = useForm();
+    const [submitting, setSubmitting] = useState<boolean>(false);
 
  /**
    * 提交
@@ -25,8 +24,6 @@ const AddChart: React.FC = () => {
     }
     console.log('Received values of form: ', values);
     setSubmitting(true);
-    setChart(undefined);
-    setOption(undefined);
 
     const { file, ...params } = values;
     // Get the file object if it exists
@@ -34,45 +31,14 @@ const AddChart: React.FC = () => {
 
 
     try{
-      const res = await postChartGenChartByAiGenChartByAi(params, fileObj);
+      const res = await postChartGenChartByAiGenChartByAiAsync(params, fileObj);
       console.log(res);
       if(!res.data){
         message.error("Analysation Failed.");
       }else{
-        message.success("Analysation Successfully");
+        message.success("The analysis task was submitted successfully. Please check it on MyChart page later.");
+        form.resetFields();
 
-
-        // const chartOption = JSON.parse(res.data.genChart ?? '');
-        // const chartOption = res.data.genChart;
-        // // Unescape and parse the genChart data
-        const unescapedGenChart = res?.data?.genChart?.replace(';', '') ?? '';
-        const chartOption = JSON.parse(unescapedGenChart);
-        // console.log('chartOption: ', chartOption);
-
-        // let chartOption;
-        // const genChart = res.data.genChart; // This is the string
-
-        // // Check if genChart is a string, then parse it
-        // if (typeof genChart === 'string') {
-        //     try {
-        //         // Trim the string before parsing
-        //         chartOption = JSON.parse('['+genChart.trim()+']');
-        //     } catch (error) {
-        //         console.error('Error parsing genChart:', error);
-        //         throw new Error("Echarts parsing error: ");
-        //     }
-        // } else {
-        //     chartOption = genChart; // Assume it's already an object
-        // }
-
-        console.log('chartOption: ', chartOption);
-        if (!chartOption){
-          throw new Error("Echarts parsing error." );
-        }
-        else{
-          setChart(res.data);
-          setOption(chartOption);
-        }
       }
     } catch (e: any){
       console.log("e.message: " + e.message);
@@ -83,11 +49,10 @@ const AddChart: React.FC = () => {
   };
 
   return (
-    <div className="add-chart">
-    <Row gutter={24}>
-      <Col span={12}>
-      <Card title="Intelligent Analysis">
+    <div className="add-chart-async">
+    <Card title="Intelligent Analysis">
         <Form
+            form={form}
             name="addChart"
             labelAlign="left" labelCol={{span:4}} wrapperCol={{span:16}}
             onFinish={onFinish}
@@ -139,27 +104,10 @@ const AddChart: React.FC = () => {
           </Form.Item>
         </Form>
       </Card>
-        
-      </Col>
-      <Col span={12}>
-        
-        <Card title="Conclusion">
-          {chart?.genResult ?? <div>Please submit on the left first</div>}
-          <Spin spinning={submitting}/>
-        </Card>
-        <Divider />
-        <Card title="Visualization Chart">
-          {
-            option ? <ReactECharts option={option} /> : <div>Please submit on the left first</div>
-          }
-          <Spin spinning={submitting}/>
-        </Card>
-      </Col>
-    </Row>
       
       
     </div>
   );
 };
 
-export default AddChart;
+export default AddChartAsync;

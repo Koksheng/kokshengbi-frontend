@@ -32,29 +32,26 @@ export async function postChartDeleteChart(
   });
 }
 
-/** 此处后端没有提供注释 POST /api/Chart/genChartByAi */
-export async function postChartGenChartByAi(
+/** 此处后端没有提供注释 POST /api/Chart/genChartByAi/genChartByAi */
+export async function postChartGenChartByAiGenChartByAi(
   body: {
-    chartName?: string,
-    goal?: string,
-    chartType?: string,
-  },file?: File ,
-  options?: {[key: string]: any}
+    chartName?: string;
+    goal?: string;
+    chartType?: string;
+  },
+  file?: File,
+  options?: { [key: string]: any },
 ) {
   const formData = new FormData();
-  
-  if(file){
-  
-    formData.append('file', file)
-  
+
+  if (file) {
+    formData.append('file', file);
   }
-  
-  Object.keys(body).forEach(ele => {
-    
+
+  Object.keys(body).forEach((ele) => {
     const item = (body as any)[ele];
-    
+
     if (item !== undefined && item !== null) {
-      
       if (typeof item === 'object' && !(item instanceof File)) {
         if (item instanceof Array) {
           item.forEach((f) => formData.append(ele, f || ''));
@@ -64,12 +61,51 @@ export async function postChartGenChartByAi(
       } else {
         formData.append(ele, item);
       }
-      
     }
   });
-  
-  return request<API.BIResponseBaseResponse>('/api/Chart/genChartByAi', {
-  method: 'POST',
+
+  return request<API.BIResponseBaseResponse>('/api/Chart/genChartByAi/genChartByAi', {
+    method: 'POST',
+    data: formData,
+    requestType: 'form',
+    ...(options || {}),
+  });
+}
+
+/** 此处后端没有提供注释 POST /api/Chart/genChartByAi/genChartByAiAsync */
+export async function postChartGenChartByAiGenChartByAiAsync(
+  body: {
+    chartName?: string;
+    goal?: string;
+    chartType?: string;
+  },
+  file?: File,
+  options?: { [key: string]: any },
+) {
+  const formData = new FormData();
+
+  if (file) {
+    formData.append('file', file);
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as any)[ele];
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === 'object' && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ''));
+        } else {
+          formData.append(ele, JSON.stringify(item));
+        }
+      } else {
+        formData.append(ele, item);
+      }
+    }
+  });
+
+  return request<API.BIResponseBaseResponse>('/api/Chart/genChartByAi/genChartByAiAsync', {
+    method: 'POST',
     data: formData,
     requestType: 'form',
     ...(options || {}),

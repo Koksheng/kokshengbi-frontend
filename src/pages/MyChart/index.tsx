@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { getChartListChartByPageListPage } from '@/services/kokshengbi-backend/chart';
-import { Avatar, Card, List, message } from 'antd';
+import { Avatar, Card, List, message, Result } from 'antd';
 import { useModel } from '@umijs/max';
 import Search from 'antd/es/input/Search';
 
@@ -13,6 +13,8 @@ const MyChartPage: React.FC = () => {
   const initSearchParams = {
     current: 1,
     pageSize: 4,
+    sortField: 'createTime',
+    sortOrder: 'desc',
   }
 
   const [searchParams, setSearchParams] = useState<API.getChartListChartByPageListPageParams>({...initSearchParams});
@@ -32,9 +34,11 @@ const MyChartPage: React.FC = () => {
 
         if(res.data.items){
           res.data.items.forEach(data => {
-            const chartOption = JSON.parse(data.genChart ?? '{}');
-            chartOption.title = undefined;
-            data.genChart = JSON.stringify(chartOption);
+            if(data.status === 'succeed'){
+              const chartOption = JSON.parse(data.genChart ?? '{}');
+              chartOption.title = undefined;
+              data.genChart = JSON.stringify(chartOption);
+            }
           });
         }
         // console.log("res.data.items",res.data.items);
@@ -100,10 +104,45 @@ const MyChartPage: React.FC = () => {
                 title={item.chartName}
                 description={item.chartType ? ('Chart Type: ' + item.chartType) : undefined}
               />
-              <div style={{marginBottom:16}} />
-              <p>{'Analysis Goal: ' + item.goal}</p>
-              <div style={{marginBottom:16}} />
-              <ReactECharts option={JSON.parse(item.genChart?.replace(';', '') ?? '{}')} />
+              <>
+                {
+                  item.status === 'wait' && <>
+                    <Result
+                      status="warning"
+                      title="To be generated"
+                      subTitle={item.execMessage ?? 'The current chart generation queue is busy, please wait patiently'}
+                    />
+                  </>
+                }
+                {
+                  item.status === 'running' && <>
+                    <Result
+                      status="info"
+                      title="Generating chart"
+                      subTitle={item.execMessage}
+                    />
+                  </>
+                }
+                {
+                  item.status === 'succeed' && <>
+                    <div style={{ marginBottom: 16 }} />
+                    <p>{'Analysis Goal：' + item.goal}</p>
+                    <div style={{ marginBottom: 16 }} />
+                    <ReactECharts option={item.genChart && JSON.parse(item.genChart)} />
+                  </>
+                }
+                {
+                  item.status === 'failed' && <>
+                    <Result
+                      status="error"
+                      title="Chart generation failed"
+                      subTitle={item.execMessage}
+                    />
+                  </>
+                }
+              </>
+
+              
             </Card>
           </List.Item>
         )}
