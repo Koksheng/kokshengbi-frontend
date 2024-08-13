@@ -1,4 +1,4 @@
-import { postChartGenChartByAiGenChartByAiAsync } from '@/services/kokshengbi-backend/chart';
+import { postChartGenChartByAiAsyncMqGenChartByAiAsyncMq, postChartGenChartByAiGenChartByAiAsync } from '@/services/kokshengbi-backend/chart';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Card, Form, message, Select, Space, Upload} from 'antd';
 import { useForm } from 'antd/es/form/Form';
@@ -31,7 +31,8 @@ const AddChartAsync: React.FC = () => {
 
 
     try{
-      const res = await postChartGenChartByAiGenChartByAiAsync(params, fileObj);
+      // const res = await postChartGenChartByAiGenChartByAiAsync(params, fileObj);
+      const res = await postChartGenChartByAiAsyncMqGenChartByAiAsyncMq(params, fileObj);
       console.log(res);
       if(!res.data){
         message.error("Analysation Failed.");
