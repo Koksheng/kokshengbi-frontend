@@ -10,21 +10,21 @@ const Footer: React.FC = () => {
       }}
       links={[
         {
-          key: 'Koksheng BI',
-          title: 'Koksheng BI',
-          href: 'https://pro.ant.design',
+          key: 'Smart BI Analytics',
+          title: 'Smart BI Analytics',
+          href: 'https://github.com/Koksheng/kokshengbi-backend',
           blankTarget: true,
         },
         {
           key: 'github',
           title: <GithubOutlined />,
-          href: 'https://github.com/ant-design/ant-design-pro',
+          href: 'https://github.com/Koksheng/kokshengbi-backend',
           blankTarget: true,
         },
         {
-          key: 'Business Intelligence',
-          title: 'Business Intelligence',
-          href: 'https://ant.design',
+          key: 'Koksheng BI',
+          title: 'Koksheng BI',
+          href: 'https://github.com/Koksheng/kokshengbi-backend',
           blankTarget: true,
         },
       ]}

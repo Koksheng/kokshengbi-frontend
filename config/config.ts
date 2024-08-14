@@ -75,7 +75,7 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'Koksheng BI',
+  title: 'Smart BI Analytics',
   layout: {
     locale: true,
     ...defaultSettings,

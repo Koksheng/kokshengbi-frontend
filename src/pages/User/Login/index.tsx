@@ -162,7 +162,7 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Koksheng BI"
+          title="Smart BI Analytics"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
 
           onFinish={async (values) => {
