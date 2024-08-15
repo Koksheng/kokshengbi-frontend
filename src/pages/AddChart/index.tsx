@@ -112,7 +112,7 @@ const AddChart: React.FC = () => {
                 { value: 'Bar Chart', label: 'Bar Chart' },
                 // { value: 'Stacked Chart', label: 'Stacked Chart' },
                 { value: 'Pie Chart', label: 'Pie Chart' },
-                { value: 'Radar Chart', label: 'Radar Chart' },
+                // { value: 'Radar Chart', label: 'Radar Chart' },
               ]}
             >
             </Select>
